@@ -12,9 +12,8 @@ class User(object):
         self.db.autocommit = True
         self.user = user
         self.cur = self.db.cursor()
-        self.cur.execute(
-            'select current_game from users where phone_number = %s',
-            (user,))
+        self.cur.execute('select current_game from users where phone_number = %s',
+                         (user,))
         data = self.cur.fetchone()
         if data:
             self.game = data[0]
@@ -23,19 +22,58 @@ class User(object):
                              (user,))
             self.game = None
 
+    def __del__(self):
+        self.db.close()
+
+    def command(self, move):
+        method = getattr(self, 'do_' + move.lower(), None)
+        if method:
+            return method()
+        elif move:
+            return self.make_move(''.join(move.split()))
+        else:
+            return self.do_help()
+
+    def do_help(self):
+        """Provide a help message."""
+
+        return "This is Bulls and Cows. I picked a 4 unique digits (0-9). You need to guess them, in order. Text me your guess, and I'll tell you how many bulls (right digit in the right place) and cows (a digit I have, in the wrong place) you got. Text 'commands' for a list of commands."
+
+    def do_commands(self):
+        "Provide a list of commands."
+
+        commands = [m[3:] for m in dir(self) if m.startswith('do_')]
+        return '\n'.join('{0:10}{1}'.format(m, getattr(self, 'do_' + m).__doc__)
+                         for m in commands)
+
+    def do_new(self):
+        """Start a new game."""
+
+        self.game = None
+        self.get_game()
+        return "Started a new game."
+    
+    do_start = do_new
+
+    def make_move(self, move):
+        game = self.get_game()
+        if move != game.last == game.goal:
+            # We won it last move, start a new game
+            self.game = None
+            return self.get_game().move(move)
+        return game.move(move)
+
     def get_game(self):
         game = Game(self)
         if self.game != game.id:
+            self.game = game.id
             self.cur.execute('update users set current_game = %s where phone_number = %s',
                              (game.id, self.user))
         return game
 
-    def __del__(self):
-        self.db.close()
 
 class Game(object):
     def __init__(self, user):
-        self.user = user
         self.cur = user.db.cursor()
         self.id = user.game
         if not self.id:
@@ -43,43 +81,31 @@ class Game(object):
         else:
             self.cur.execute('select goal_code, move_count, last_move from games where id = %s',
                              (self.id,))
-            self.goal, self.move, self.last = self.cur.fetchone()
+            self.goal, self.moves, self.last = self.cur.fetchone()
 
     def __del__(self):
         self.cur.close()
 
     def newgame(self):
         self.goal = ''.join(chr(x) for x in sample(range(ord('0'), ord('9')), 4))
-        self.move = 0
+        self.moves = 0
         self.last = None
         self.cur.execute('insert into games (goal_code) values (%s) returning id',
                          (self.goal,))
         self.id = self.cur.fetchone()[0]
 
-    def command(self, move):
-        method = getattr(self, 'do_' + move, None)
-        if method:
-            return method()
-        elif move:
-            return self.make_move(move)
-        else:
-            return self.do_help()
-
-    def do_help(self):
-        return "This is Bulls and Cows. I picked a 4 unique digits (0-9). You need to guess them, in order. Text me your guess, and I'll tell you how many bulls (right digit in the right place) and cows (a digit I have, in the wrong place) you got."
-
-    def make_move(self, move):
+    def move(self, move):
         bulls, cows = self.checkmove(move)
         if move != self.last:
-            self.move += 1
+            self.moves += 1
             self.cur.execute('insert into moves (game, move_count, move, bulls, cows) values (%s, %s, %s, %s, %s)',
-                             (self.id, self.move, move, bulls, cows))
+                             (self.id, self.moves, move, bulls, cows))
             self.cur.execute('update games set move_count=%s, last_move=%s where id=%s',
-                             (self.move, move, self.id))
+                             (self.moves, move, self.id))
         if bulls == 4:
-            return "You won in {} moves".format(self.move)
+            return "You won in {} moves".format(self.moves)
         else:
-            return "Move {}: {} Bulls, {} Cows".format(self.move, bulls, cows)
+            return "Move {}: {} Bulls, {} Cows".format(self.moves, bulls, cows)
 
     def checkmove(self, move):
         bulls = cows = 0
