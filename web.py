@@ -1,11 +1,17 @@
 import os
-from flask import Flask
+from flask import Flask, url_for, redirect
 
 app = Flask(__name__)
 
+from pasture import User
+
 @app.route('/')
-def hello():
-    return 'Hello Gunicorn World!'
+def help():
+    return redirect(url_for('static', filename='help.html'))
+
+@app.route('/<user>/<command>')
+def move(user, command):
+    return User(user).command(command)
 
 if __name__ == '__main__':
     # Bind to PORT if defined, otherwise default to 5000.
