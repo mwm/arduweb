@@ -1,5 +1,5 @@
 import os
-from flask import Flask, url_for, redirect
+from flask import Flask, url_for, redirect, request
 
 app = Flask(__name__)
 
@@ -11,7 +11,16 @@ def help():
 
 @app.route('/<user>/<command>')
 def move(user, command):
+    """Quick hack for testing moves."""
     return User(user).command(command)
+
+@app.route('/mailed', methods=['POST'])
+def mailmove():
+    subject = request.form['subject']
+    command = request.form['body-plain']
+    phone = subject.partition('[')[2].partition(']')[0].translate(None, '()-')
+    print("Move", move, "from", phone)
+    return move(phone, command)	# Not sure where this goes...
 
 if __name__ == '__main__':
     # Bind to PORT if defined, otherwise default to 5000.
