@@ -1,10 +1,9 @@
 drop table games cascade ;
 create table games (
        id		serial primary key ,
-       goal_code	char(4) not null,
+       goal_code	char(4) not null ,
        last_move	char(4) ,
-       move_count	smallint default 0,
-       solved		boolean
+       move_count	smallint default 0
        ) ;
        
 drop table users ;

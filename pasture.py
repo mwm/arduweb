@@ -57,27 +57,26 @@ class Game(object):
         self.id = self.cur.fetchone()[0]
 
     def command(self, move):
-        method = getattr(self, 'do_' + move)
+        method = getattr(self, 'do_' + move, None)
         if method:
-            method()
+            return method()
         elif move:
-            self.do_move(move)
+            return self.make_move(move)
         else:
-            self.do_help()
+            return self.do_help()
 
     def do_help(self):
         return "This is Bulls and Cows. I picked a 4 unique digits (0-9). You need to guess them, in order. Text me your guess, and I'll tell you how many bulls (right digit in the right place) and cows (a digit I have, in the wrong place) you got."
 
-    def do_move(self, move):
+    def make_move(self, move):
         bulls, cows = self.checkmove(move)
-        solved = bulls == 4
         if move != self.last:
             self.move += 1
-            self.cur.execute('insert into moves (game, move_count, move, bulls, cows, solved) values (%s, %s, %s, %s, %s, %s)',
-                             (self.id, self.move, move, bulls, cows, solved))
-            self.cur.execute('update games set move_count=%s, last_move=%s, solve=%s where id=%s',
-                             (self.move, move, solved, self.id))
-        if solved:
+            self.cur.execute('insert into moves (game, move_count, move, bulls, cows) values (%s, %s, %s, %s, %s)',
+                             (self.id, self.move, move, bulls, cows))
+            self.cur.execute('update games set move_count=%s, last_move=%s where id=%s',
+                             (self.move, move, self.id))
+        if bulls == 4:
             return "You won in {} moves".format(self.move)
         else:
             return "Move {}: {} Bulls, {} Cows".format(self.move, bulls, cows)
