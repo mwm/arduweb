@@ -3,6 +3,7 @@
 """Ancient code-breaking game "Bulls and Cows"."""
 
 from random import sample
+from string import digits
 
 from psycopg2 import connect
 
@@ -87,7 +88,7 @@ class Game(object):
         self.cur.close()
 
     def newgame(self):
-        self.goal = ''.join(chr(x) for x in sample(range(ord('0'), ord('9')), 4))
+        self.goal = ''.join(sample(digits, 4))
         self.moves = 0
         self.last = None
         self.cur.execute('insert into games (goal_code) values (%s) returning id',
@@ -95,6 +96,9 @@ class Game(object):
         self.id = self.cur.fetchone()[0]
 
     def move(self, move):
+        if len(move) != 4 or any((x not in digits) for x in move):
+            return 'Invalid move.'
+
         bulls, cows = self.checkmove(move)
         if move != self.last:
             self.moves += 1
