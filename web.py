@@ -19,7 +19,7 @@ def mailmove():
     subject = request.form['subject']
     command = request.form['body-plain']
     phone = subject.partition('[')[2].partition(']')[0].translate(None, '()-')
-    print("Move", move, "from", phone)
+    print("Move", command, "from", phone)
     return move(phone, command)	# Not sure where this goes...
 
 if __name__ == '__main__':
