@@ -6,6 +6,7 @@ from flask import Flask, url_for, redirect, request, send_from_directory
 app = Flask(__name__)
 
 from pasture import User
+from googlevoice.voice import Voice
 
 @app.route('/')
 def help():
@@ -16,18 +17,17 @@ def favicon():
     return send_from_directory(os.path.join(app.root_path, 'static'),
                                'cow.ico', mimetype='image/vnd.microsoft.icon')
 
-@app.route('/<user>/<command>')
-def move(user, command):
-    """Quick hack for testing moves."""
-    return User(user).command(command)
-
 @app.route('/mailed', methods=['POST'])
 def mailmove():
-    subject = str(request.form['subject'])
-    command = request.form['body-plain']
-    phone = subject.partition('[')[2].partition(']')[0].translate(None, '()- ')
-    phone = str(phone).translate(None, '-() ')
-    return move(phone, command)	# Not sure where this goes...
+    return send_result(str(request.form['subject']), request.form['body-plain'])
+
+def send_result(subject, command):
+    phone = subject.partition('(')[2].translate(None, ']-() ')
+    v = Voice()
+    v.login('mike.w.meyer@gmail.com', "_Pdn&Z4Gye'~yCP9]bMH%-@M'")
+    result = User(phone).command(command)
+    v.send_sms(phone, result)
+    return result
 
 if __name__ == '__main__':
     # Bind to PORT if defined, otherwise default to 5000.
