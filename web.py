@@ -1,4 +1,6 @@
 import os
+from sys import stdout
+
 from flask import Flask, url_for, redirect, request
 
 app = Flask(__name__)
@@ -16,10 +18,10 @@ def move(user, command):
 
 @app.route('/mailed', methods=['POST'])
 def mailmove():
-    subject = request.form['subject']
+    subject = str(request.form['subject'])
     command = request.form['body-plain']
-    phone = subject.partition('[')[2].partition(']')[0].translate(None, '()-')
-    print("Move", command, "from", phone)
+    phone = subject.partition('[')[2].partition(']')[0].translate(None, '()- ')
+    phone = str(phone).translate(None, '-() ')
     return move(phone, command)	# Not sure where this goes...
 
 if __name__ == '__main__':
