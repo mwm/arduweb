@@ -1,5 +1,4 @@
 import os
-from sys import stdout
 
 from flask import Flask, url_for, redirect, request, send_from_directory
 
