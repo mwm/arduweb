@@ -1,7 +1,7 @@
 import os
 from sys import stdout
 
-from flask import Flask, url_for, redirect, request
+from flask import Flask, url_for, redirect, request, send_from_directory
 
 app = Flask(__name__)
 
@@ -10,6 +10,11 @@ from pasture import User
 @app.route('/')
 def help():
     return redirect(url_for('static', filename='help.html'))
+
+@app.route('/favicon.ico')
+def favicon():
+    return send_from_directory(os.path.join(app.root_path, 'static'),
+                               'favicon.ico', mimetype='image/vnd.microsoft.icon')
 
 @app.route('/<user>/<command>')
 def move(user, command):

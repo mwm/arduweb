@@ -38,7 +38,7 @@ class User(object):
     def do_help(self):
         """Provide a help message."""
 
-        return "This is Bulls and Cows. I picked a 4 unique digits (0-9). You need to guess them, in order. Text me your guess, and I'll tell you how many bulls (right digit in the right place) and cows (a digit I have, in the wrong place) you got. Text 'commands' for a list of commands."
+        return "This is the game Bulls and Cows. See http://moo.mired.org/ for instructions on how to play. Text 'commands' for a list of commands."
 
     def do_commands(self):
         "Provide a list of commands."
@@ -96,7 +96,8 @@ class Game(object):
         self.id = self.cur.fetchone()[0]
 
     def move(self, move):
-        if len(move) != 4 or any((x not in digits) for x in move):
+        if (len(move) != 4 or len(set(move)) != 4 or
+              any((x not in digits) for x in move)):
             return 'Invalid move.'
 
         bulls, cows = self.checkmove(move)
