@@ -21,7 +21,7 @@ def mailmove():
     return send_result(request.form['from'], request.form['subject'],
                        request.form['body-plain'])
 
-moomail = 'moo@bulls-and-cows.mailgun.org'
+moomail = 'outbound@bulls-and-cows.mailgun.org'
 def send_result(to, subject, command):
     s = SMTP('smtp.mailgun.org', 587)
     s.login('postmaster@bulls-and-cows.mailgun.org', '8wvv9y0wpgx8')
