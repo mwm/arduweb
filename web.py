@@ -5,7 +5,7 @@ from flask import Flask, url_for, redirect, request, send_from_directory
 app = Flask(__name__)
 
 from pasture import User
-from googlevoice.voice import Voice
+from smtplib import SMTP
 
 @app.route('/')
 def help():
@@ -18,14 +18,18 @@ def favicon():
 
 @app.route('/mailed', methods=['POST'])
 def mailmove():
-    return send_result(str(request.form['subject']), request.form['body-plain'])
+    return send_result(request.form['from'], request.form['subject'],
+                       request.form['body-plain'])
 
-def send_result(subject, command):
+moomail = 'moo@bulls-and-cows.mailgun.org'
+def send_result(to, subject, command):
+    s = SMTP('smtp.mailgun.org', 587)
+    s.login('postmaster@bulls-and-cows.mailgun.org', '8wvv9y0wpgx8')
     phone = subject.partition('(')[2].translate(None, ']-() ')
-    v = Voice()
-    v.login('mike.w.meyer@gmail.com', "_Pdn&Z4Gye'~yCP9]bMH%-@M'")
     result = User(phone).command(command)
-    v.send_sms(phone, result)
+    s.sendmail(moomail, to,
+               "From: {}\r\nTo: {}\r\n\r\n{}\r\n".format(moomail, to, result))
+    s.quit()
     return result
 
 if __name__ == '__main__':
