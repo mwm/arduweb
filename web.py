@@ -26,11 +26,11 @@ def send_result(to, subject, command):
     s = SMTP('smtp.mailgun.org', 587)
     s.login('postmaster@bulls-and-cows.mailgun.org', '8wvv9y0wpgx8')
     phone = subject.partition('(')[2].translate(None, ']-() ')
-    result = User(phone).command(command)
-    s.sendmail(moomail, to,
-               "From: {}\r\nTo: {}\r\n\r\n{}\r\n".format(moomail, to, result))
+    reply = User(phone).command(command)
+    msg = "From: {}\r\nTo: {}\r\n\r\n{}\r\n".format(moomail, to, reply)
+    result = s.sendmail(moomail, to, msg)
     s.quit()
-    return result
+    return "{}\n{}".format(msg, result)
 
 if __name__ == '__main__':
     # Bind to PORT if defined, otherwise default to 5000.
