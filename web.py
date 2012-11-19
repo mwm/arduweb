@@ -20,8 +20,8 @@ def favicon():
 def mailmove():
     try:
         print "Trying"
-        res = send_result(request.form['from'], request.form['subject'],
-                          request.form['body-plain'])
+        res = send_result(str(request.form['from']), str(request.form['subject']),
+                          str(request.form['body-plain']))
         print res
     except Exception as e:
         print e
