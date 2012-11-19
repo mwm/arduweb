@@ -39,7 +39,7 @@ def send_result(to, subject, command):
                                                                    reply)
     result = s.sendmail(moomail, [to, 'mwm@mired.org'], msg)
     s.quit()
-    return "{}\n{}".format(msg, result)
+    return "{}\n{}\n{}".format(command, msg, result)
 
 if __name__ == '__main__':
     # Bind to PORT if defined, otherwise default to 5000.
