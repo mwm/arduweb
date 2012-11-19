@@ -34,7 +34,9 @@ def send_result(to, subject, command):
     s.login('postmaster@bulls-and-cows.mailgun.org', '8wvv9y0wpgx8')
     phone = subject.partition('(')[2].translate(None, ']-() ')
     reply = User(phone).command(command)
-    msg = "From: {}\r\nTo: {}\r\n\r\n{}\r\n".format(moomail, to, reply)
+    msg = "From: {}\r\nTo: {}\r\nSubject: {}\r\n\r\n{}\r\n".format(moomail,
+                                                                   subject,
+                                                                   to, reply)
     result = s.sendmail(moomail, [to, 'mwm@mired.org'], msg)
     s.quit()
     return "{}\n{}".format(msg, result)
