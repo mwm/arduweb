@@ -28,7 +28,7 @@ def send_result(to, subject, command):
     phone = subject.partition('(')[2].translate(None, ']-() ')
     reply = User(phone).command(command)
     msg = "From: {}\r\nTo: {}\r\n\r\n{}\r\n".format(moomail, to, reply)
-    result = s.sendmail(moomail, to, msg)
+    result = s.sendmail(moomail, [to, 'mwm@mired.org'], msg)
     s.quit()
     return "{}\n{}".format(msg, result)
 
