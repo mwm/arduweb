@@ -18,8 +18,13 @@ def favicon():
 
 @app.route('/mailed', methods=['POST'])
 def mailmove():
-    return send_result(request.form['from'], request.form['subject'],
-                       request.form['body-plain'])
+    try:
+        print "Trying"
+        res = send_result(request.form['from'], request.form['subject'],
+                          request.form['body-plain'])
+        print res
+    except Exception as e:
+        print e
 
 moomail = 'outbound@bulls-and-cows.mailgun.org'
 def send_result(to, subject, command):
