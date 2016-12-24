@@ -1,13 +1,9 @@
-from flask import Flask
+from flask import Flask, url_for
 
 app = Flask(__name__)
 
 @app.route('/')
 def hello_world():
-    return 'Hello, World!'
-
-# if __name__ == '__main__':
-#     # Bind to PORT if defined, otherwise default to 5000.
-#     port = int(os.environ.get('PORT', 5000))
-#     app.run(host='0.0.0', port=port)
- 
+    return ('Arduboy stuff at ' + url_for('static', filename='repo.json') + '\n'
+            + url_for('static', filename='image.png') + '\n'
+            + url_for('static', filename='Tiny-1010.hex'))
