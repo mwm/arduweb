@@ -4,6 +4,4 @@ gunicorn==19.6.0
 itsdangerous==0.24
 Jinja2==2.8
 MarkupSafe==0.23
-sqlite3==0.0.0
-Tkinter==0.0.0
 Werkzeug==0.11.11
