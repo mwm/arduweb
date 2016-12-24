@@ -1,4 +1,4 @@
-
+{
 	"repository":"Mike's Family Repo",
 	"api-version":"0.5",
 	"maintainer":"mwm@mired.org", 
@@ -8,6 +8,6 @@
 		 "version":"0.96",
                  "cover": "http://arduboy.mired.org/static/image.png",
 		 "hex": "http://arduboy.mired.org/static/Tiny-1010-Mom.hex",
-		 "description":"Mom's 10x10 block puzzle game.",
+		 "description":"A 10x10 block puzzle game.",
 		 "model":"Production"}]
 }
