@@ -1,27 +1,13 @@
-{
+
 	"repository":"Mike's Family Repo",
 	"api-version":"0.5",
 	"maintainer":"mwm@mired.org", 
 	"items":[
 		{"name":"1010 for Mom",
-		"author":"mwm",
-		"version":"0.96",
+		 "author":"mwm",
+		 "version":"0.96",
                  "cover": "http://arduboy.mired.org/static/image.png",
 		 "hex": "http://arduboy.mired.org/static/Tiny-1010-Mom.hex",
-		 "description":"A 10x10 block puzzle game for Mom.",
-		 "model":"Production"},
-		{"name":"1010 for Paul",
-		"author":"mwm",
-		"version":"0.96",
-                 "cover": "http://arduboy.mired.org/static/image.png",
-		 "hex": "http://arduboy.mired.org/static/Tiny-1010-Paul.hex",
-		 "description":"A 10x10 block puzzle game for Paul.",
-		 "model":"Production"},
-		{"name":"1010 for Alan",
-		"author":"mwm",
-		"version":"0.96",
-                 "cover": "http://arduboy.mired.org/static/image.png",
-		 "hex": "http://arduboy.mired.org/static/Tiny-1010-Alan.hex",
-		 "description":"A 10x10 block puzzle game for Alan.",
+		 "description":"Mom's 10x10 block puzzle game.",
 		 "model":"Production"}]
 }
