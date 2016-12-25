@@ -6,7 +6,8 @@ app = Flask(__name__)
 @app.route('/')
 def hello_world():
     return """<html><head><title>mwm's arduboy placeholder</title></head>
-              <body><p>You probably want <a href="/repo">the repo</a></p></body>"""
+              <body><p>You probably want <a href="/repo">the repo</a> or
+              the <a href="/static/Tiny-1010.arduboy">arduboy file</a></p></body>"""
 
 @app.route('/repo')
 def repo():
