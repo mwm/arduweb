@@ -1,39 +1,56 @@
 """The web server, via flask."""
 
-from makers import make_repo, make_arduboy_json
 from games import repos as repositories
+from makers import make_html, make_repo, make_zipfile
 
 from flask import Flask, abort, redirect, url_for
 
+from simplejson import dumps
 
 app = Flask(__name__)
 
 @app.route('/')
 def hello_world():
-    return """<html><head><title>mwm's arduboy placeholder</title></head>
-              <body><p>You probably want <a href="/repo">the repo</a> or
-              the <a href="/static/Tiny-1010.arduboy">arduboy file</a></p></body>"""
+    repos = [key for key in repositories.iterkeys() if not key.startswith('_')]
+    if len(repos) == 1:
+        return redirect(url_for('repos', repo=key + '.html'))
+    out = ["<html><head><title>Arduboy repos</title></head><body>"]
+    out.append('<h1>Arduboy repositories hosted here</h1>')
+    for key in repos:
+        out.append('<li><a href="%s">%s</a></li>'
+                   % (url_for('repos', repo=key + '.html'), key))
+    out.append('</ul></body></html>')
+    return '\n'.join(out)
+
 
 @app.route('/arduboy/<game>')
 def arduboy(game):
-    out = make_arduboy_json(game)
+    if game.endswith('.arduboy'):
+        game = game[:-8]
+    elif game.endswith('.zip'):
+        game = game[:-4]
+    out = make_zipfile(game)
     if out is None:
         abort(404)
     return out
 
+
 @app.route('/repos/<repo>')
 def repos(repo):
-    out = make_repo(repo)
+    out = make_repo(repo[:-5] if '.' in repo else repo)
     if out is None:
         abort(404)
-    return make_repo(repo)
+    if repo.endswith('.html'):
+        return make_html(repo[:-5], out)
+    return dumps(out)
 
+# Install the backwards compatible repo redirects
 class do_repo_redirect(object):
     def __init__(self, repo):
         self.repo = repo
 
     def __call__(self):
-        return redirect(url_for('repos', repo=self.repo))
+        return redirect(url_for('repos', repo=self.repo + '.json'))
 
 for key in repositories.iterkeys():
     if not key.startswith('_'):
