@@ -26,25 +26,11 @@ the "static" directory. The web front end will try and serve them from there.
 
 repos = {'_defaults': {'api-version': '0.5', 'maintainer': 'mwm@mired.org'},
          'repo': {'repository': "Mike's Arduboy Repo",
-                  'items': ['1010']},
-         'family': {'repository': "Mike's Family Repo",
-                    'items': ['1010 for Mom', '1010 for Alan', '1010 for Paul']}}
+                  'items': ['1010']}}
 
 games = {'_defaults': {'author': 'mwm', 'model': 'Production',
                        'device': 'Arduboy', 'banner': 'banner.png'},
          '1010': {'hex': 'Tiny-1010.hex',
                   'version': '0.96',
                   'description': 'A 10x10 block puzzle game.'},
-         '1010 for Mom': {'hex': 'Tiny-1010-Mom.hex',
-                          'cover': 'Tiny-1010.png',
-                          'version': '0.96',
-                          'description': 'A 10x10 block puzzle game.'},
-         '1010 for Alan': {'hex': 'Tiny-1010-Alan.hex',
-                           'cover': 'Tiny-1010.png',
-                           'version': '0.96',
-                           'description': 'A 10x10 block puzzle game.'},
-         '1010 for Paul': {'hex': 'Tiny-1010-Paul.hex',
-                           'cover': 'Tiny-1010.png',
-                           'version': '0.96',
-                           'description': 'A 10x10 block puzzle game.'},
          }
