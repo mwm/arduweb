@@ -13,12 +13,12 @@ app = Flask(__name__)
 def hello_world():
     repos = [key for key in repositories.iterkeys() if not key.startswith('_')]
     if len(repos) == 1:
-        return redirect(url_for('repos', repo=key + '.html'))
+        return redirect(url_for('repos', repo=repos[0] + '.html'))
     out = ["<html><head><title>Arduboy repos</title></head><body>"]
     out.append('<h1>Arduboy repositories hosted here</h1>')
-    for key in repos:
+    for repo in repos:
         out.append('<li><a href="%s">%s</a></li>'
-                   % (url_for('repos', repo=key + '.html'), key))
+                   % (url_for('repos', repo=repo + '.html'), repo))
     out.append('</ul></body></html>')
     return '\n'.join(out)
 
